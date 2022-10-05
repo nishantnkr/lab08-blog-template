@@ -27,10 +27,22 @@ app.use('/assets/font-awesome/fonts', express.static(
 app.get('/', (req, res, next) => {
   // TODO Section 6: Uncomment this when you want to get the data from the API.
   //
-  // api.get('/posts').then((posts) => {
+    api.get('/posts').then((posts) => {
 
     // TODO Section 6: Change code below to get data from the API
+    const initialState = combinedReducers();
+    initialState.posts.visiblePosts = posts;
+    initialState.time.now = moment().format();
+    const initialStateString =
+        JSON.stringify(initialState).replace(/<\//g, "<\\/");
     // TODO Section 9: Change code below to use universal JavaScript
+
+    // Create the Redux store
+    const store = createStore(initialState);
+    //Create the root React component
+    const rootComponent = Root({store});
+    //Render the root component to an HTML string
+    const reactHtml = ReactDOMServer.renderToString(rootComponent);
 
     const htmlContent = `
       <!DOCTYPE html>
@@ -41,9 +53,9 @@ app.get('/', (req, res, next) => {
             <script src="/assets/js/vendor.js"></script>
         </head>
         <body>
-          <div class="container" id="root"></div>
+          <div class="container" id="root">${reactHtml}</div>
           <script src="/assets/js/app.js"></script>
-          <script>window.main();</script>
+          <script>window.main(${initialStateString})</script>
         </body>
       </html>`;
 
@@ -52,7 +64,7 @@ app.get('/', (req, res, next) => {
 
   // TODO Section 6: Uncomment this when you want to get the data from the API.
   //
-  // }).catch(next);
+   }).catch(next);
 });
 
 // Catch-all for handling errors.

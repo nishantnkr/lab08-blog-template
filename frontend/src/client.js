@@ -11,9 +11,9 @@ const combinedReducers = require('./reducers');
 
 // TODO Section 6: Change code below to get data from the API
 
-window.main = () => {
+window.main = (initialState) => {
   // Create root React component with Redux store
-  const store = createStore();
+  const store = createStore(initialState);
   const rootComponent = Root({ store });
 
   // Mount React root component in DOM
